@@ -247,7 +247,12 @@ export function apply(
       if (context[key].toLowerCase() !== filters[key].toLowerCase()) {
         return false
       }
-    } else if (typeof filters[key] === 'bigint' || typeof filters[key] === 'number' || typeof context[key] === 'bigint' || typeof context[key] === 'number') {
+    } else if (
+      typeof filters[key] === 'bigint' ||
+      typeof filters[key] === 'number' ||
+      typeof context[key] === 'bigint' ||
+      typeof context[key] === 'number'
+    ) {
       if (BigInt(context[key]) !== BigInt(filters[key])) {
         return false
       }
