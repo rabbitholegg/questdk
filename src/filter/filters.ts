@@ -161,7 +161,7 @@ export const handleAbiDecode = (context: any, filter: { $abi: Abi }) => {
     )
 
     return { ...namedArgs, sighash, functionName }
-  } catch (e) {
+  } catch (_e) {
     return null
   }
 }
@@ -179,13 +179,16 @@ export const handleAbiParamDecode = (
   try {
     const params = parseAbiParameters(filter.$abiParams.join(', '))
     const args = decodeAbiParameters(params, context)
-    const namedArgs = params.reduce((acc: Record<string, any>, param, index) => {
-      acc[`${param.name || index}`] = args[index]
-      return acc
-    }, {})
+    const namedArgs = params.reduce(
+      (acc: Record<string, any>, param, index) => {
+        acc[`${param.name || index}`] = args[index]
+        return acc
+      },
+      {},
+    )
 
     return namedArgs
-  } catch (e) {
+  } catch (_e) {
     return null
   }
 }
@@ -239,7 +242,10 @@ export function apply(
   for (const key in filters) {
     if (!Object.hasOwnProperty.call(filters, key)) continue
     if (key in preprocessors) {
-      const processedContext = preprocessors[key as PreprocessorKey](context, filters)
+      const processedContext = preprocessors[key as PreprocessorKey](
+        context,
+        filters,
+      )
       if (processedContext === null) {
         return false
       }
