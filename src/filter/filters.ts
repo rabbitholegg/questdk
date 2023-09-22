@@ -231,6 +231,10 @@ export function apply(
   for (const key in filters) {
     if (!Object.hasOwnProperty.call(filters, key)) continue
     if (key in preprocessors) {
+      // Sometimes when using nested ABI decoding, the context can be undefined
+      if(context === undefined) {
+        return false
+      }
       context = preprocessors[key as PreprocessorKey](context, filters)
       continue
     }
