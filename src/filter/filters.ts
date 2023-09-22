@@ -1,3 +1,4 @@
+import type { BaseError } from 'abitype'
 import {
   type Abi,
   decodeAbiParameters,
@@ -138,28 +139,33 @@ export const handleRegex = (context: any, filter: string): boolean => {
  * @returns The decoded ABI.
  */
 export const handleAbiDecode = (context: any, filter: { $abi: Abi }) => {
-  const sighash = slice(context, 0, 4)
+  try{
+    const sighash = slice(context, 0, 4)
 
-  const { functionName, args = [] } = decodeFunctionData({
-    abi: filter.$abi,
-    data: context,
-  })
+    const { functionName, args = [] } = decodeFunctionData({
+      abi: filter.$abi,
+      data: context,
+    })
+  
 
-  const abiItem = getAbiItem({
-    abi: filter.$abi,
-    name: functionName,
-    args,
-  })
+    const abiItem = getAbiItem({
+      abi: filter.$abi,
+      name: functionName,
+      args,
+    })
 
-  const namedArgs = [...abiItem.inputs].reduce(
-    (acc: Record<string, any>, input, index) => {
-      acc[`${input.name || index}`] = args[index]
-      return acc
-    },
-    {},
-  )
+    const namedArgs = [...abiItem.inputs].reduce(
+      (acc: Record<string, any>, input, index) => {
+        acc[`${input.name || index}`] = args[index]
+        return acc
+      },
+      {},
+    )
 
-  return { ...namedArgs, sighash, functionName }
+    return { ...namedArgs, sighash, functionName }
+  } catch(e: unknown) {
+    return null
+  }
 }
 
 /**
@@ -172,14 +178,18 @@ export const handleAbiParamDecode = (
   context: any,
   filter: { $abiParams: string[] },
 ) => {
-  const params = parseAbiParameters(filter.$abiParams.join(', '))
-  const args = decodeAbiParameters(params, context)
-  const namedArgs = params.reduce((acc: Record<string, any>, param, index) => {
-    acc[`${param.name || index}`] = args[index]
-    return acc
-  }, {})
+  try {
+    const params = parseAbiParameters(filter.$abiParams.join(', '))
+    const args = decodeAbiParameters(params, context)
+    const namedArgs = params.reduce((acc: Record<string, any>, param, index) => {
+      acc[`${param.name || index}`] = args[index]
+      return acc
+    }, {})
 
-  return namedArgs
+    return namedArgs
+  } catch(e: unknown) {
+    return null
+  }
 }
 
 const operators = {
@@ -231,8 +241,9 @@ export function apply(
   for (const key in filters) {
     if (!Object.hasOwnProperty.call(filters, key)) continue
     if (key in preprocessors) {
-      if(!context) return false
-      context = preprocessors[key as PreprocessorKey](context, filters)
+      const processedContext = preprocessors[key as PreprocessorKey](context, filters)
+      if(!processedContext) return false
+      context = processedContext
       continue
     }
 
