@@ -241,6 +241,7 @@ export function apply(
   for (const key in filters) {
     if (!Object.hasOwnProperty.call(filters, key)) continue
     if (key in preprocessors) {
+      if (!context) return false
       const processedContext = preprocessors[key as PreprocessorKey](context, filters)
       if(!processedContext) return false
       context = processedContext
