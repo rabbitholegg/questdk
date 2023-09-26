@@ -28,10 +28,22 @@ export type MintActionParams = {
   quantity: number
 }
 
+export type DelegateActionParams = {
+  chainId: number
+  delegate: Address
+  project: Address | string
+  contractAddress?: Address
+  amount?: bigint | FilterOperator
+  delegator?: Address
+}
+
 export type ActionParams =
   | SwapActionParams
   | BridgeActionParams
   | MintActionParams
+  | DelegateActionParams
+
+
 
 export interface IActionPlugin {
   pluginId: string
@@ -45,6 +57,9 @@ export interface IActionPlugin {
   ) => Promise<TransactionFilter> | Promise<PluginActionNotImplementedError>
   mint: (
     params: MintActionParams,
+  ) => Promise<TransactionFilter> | Promise<PluginActionNotImplementedError>
+  delegate: (
+    params: DelegateActionParams,
   ) => Promise<TransactionFilter> | Promise<PluginActionNotImplementedError>
 }
 
