@@ -58,7 +58,7 @@ export interface IActionPlugin {
   mint: (
     params: MintActionParams,
   ) => Promise<TransactionFilter> | Promise<PluginActionNotImplementedError>
-  delegate: (
+  delegate?: (
     params: DelegateActionParams,
   ) => Promise<TransactionFilter> | Promise<PluginActionNotImplementedError>
 }
