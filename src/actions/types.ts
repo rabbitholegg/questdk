@@ -67,4 +67,8 @@ export enum ActionType {
   Bridge = 'bridge',
   Swap = 'swap',
   Mint = 'mint',
+  Deposit = 'deposit',
+  Delegate = 'delegate',
+  Lend = 'lend',
+  Other = 'other',
 }
