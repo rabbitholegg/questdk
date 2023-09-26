@@ -43,8 +43,6 @@ export type ActionParams =
   | MintActionParams
   | DelegateActionParams
 
-
-
 export interface IActionPlugin {
   pluginId: string
   getSupportedChainIds: () => Promise<number[]>
