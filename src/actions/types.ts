@@ -70,29 +70,12 @@ export type DelegateActionParams = {
   delegator?: Address
 }
 
-//https://github.com/OpenZeppelin/openzeppelin-contracts/blob/e5c63635e3508a8d9d0afed091578cc4bb59a9c7/contracts/governance/IGovernor.sol#L142C1-L157C7
 export type VoteActionParams = {
   chainId: number
   governorAddress?: Address
   proposalId?: bigint | FilterOperator
-  weight?: bigint | FilterOperator
+  support?: bigint | FilterOperator
 }
-
-// event VoteCast(
-//address indexed voter,
-// uint256 proposalId,
-// uint8 support,
-//  uint256 weight,
-// string reason);
-
-// event VoteCastWithParams(
-//     address indexed voter,
-//     uint256 proposalId,
-//     uint8 support,
-//     uint256 weight,
-//     string reason,
-//     bytes params
-// );
 
 export type ActionParams =
   | SwapActionParams
