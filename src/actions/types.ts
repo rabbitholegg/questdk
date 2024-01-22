@@ -78,14 +78,12 @@ export type VoteActionParams = {
   weight?: bigint | FilterOperator
 }
 
-
 // event VoteCast(
-  //address indexed voter, 
-// uint256 proposalId, 
+//address indexed voter,
+// uint256 proposalId,
 // uint8 support,
-//  uint256 weight, 
+//  uint256 weight,
 // string reason);
-
 
 // event VoteCastWithParams(
 //     address indexed voter,
