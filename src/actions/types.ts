@@ -74,8 +74,8 @@ export type VoteActionParams = {
   chainId: number
   project: Address | string
   contractAddress: Address
+  support: boolean | FilterOperator
   proposalId?: bigint | FilterOperator
-  support?: boolean | FilterOperator
 }
 
 export type ActionParams =
