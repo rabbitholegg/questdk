@@ -1,6 +1,6 @@
-import { type Address } from 'viem'
 import type { FilterOperator, TransactionFilter } from '../filter/types.js'
 import type { PluginActionNotImplementedError } from '../index.js'
+import { type Address } from 'viem'
 
 export type SwapActionParams = {
   chainId: number
