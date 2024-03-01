@@ -75,6 +75,11 @@
       "import": "./dist/esm/filter/index.js",
       "default": "./dist/cjs/filter/index.js"
     },
+    "./tokens": {
+      "types": "./dist/types/tokens/index.d.ts",
+      "import": "./dist/esm/tokens/index.js",
+      "default": "./dist/cjs/tokens/index.js"
+    },
     "./utils": {
       "types": "./dist/types/utils/index.d.ts",
       "import": "./dist/esm/utils/index.js",
