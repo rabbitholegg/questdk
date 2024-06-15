@@ -6,7 +6,7 @@ export {
 
 export { PluginActionNotImplementedError } from './errors/plugin.js'
 
-export * from './abi/quest-factory.js';
+export * from './abi/quest-factory.js'
 
 export type {
   SwapActionParams,
