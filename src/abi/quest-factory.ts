@@ -1,5 +1,18 @@
 export default [
   {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
+      },
+    ],
+    name: 'cancelQuest',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -21,6 +34,21 @@ export default [
   },
   {
     inputs: [],
+    name: 'AlreadyInitialized',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'AuthOwnerDiscountToken',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ClaimFailed',
+    type: 'error',
+  },
+  {
+    inputs: [],
     name: 'Deprecated',
     type: 'error',
   },
@@ -31,7 +59,7 @@ export default [
   },
   {
     inputs: [],
-    name: 'InvalidHash',
+    name: 'InvalidMintFee',
     type: 'error',
   },
   {
@@ -41,12 +69,22 @@ export default [
   },
   {
     inputs: [],
-    name: 'OnlyOwnerCanCreate1155Quest',
+    name: 'NewOwnerIsZeroAddress',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'NoHandoverRequest',
     type: 'error',
   },
   {
     inputs: [],
     name: 'OverMaxAllowedToMint',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'QuestAddressMismatch',
     type: 'error',
   },
   {
@@ -76,17 +114,32 @@ export default [
   },
   {
     inputs: [],
-    name: 'QuestTypeInvalid',
+    name: 'QuestTypeNotSupported',
     type: 'error',
   },
   {
     inputs: [],
-    name: 'RewardNotAllowed',
+    name: 'Reentrancy',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'ReferralFeeTooHigh',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'Unauthorized',
     type: 'error',
   },
   {
     inputs: [],
     name: 'ZeroAddressNotAllowed',
+    type: 'error',
+  },
+  {
+    inputs: [],
+    name: 'txOriginMismatch',
     type: 'error',
   },
   {
@@ -126,8 +179,57 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'string',
+        name: 'questId',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'rabbitHoleAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
         internalType: 'uint256',
-        name: 'percent',
+        name: 'rabbitHoleAmountWei',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'questCreatorAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'questCreatorAmountWei',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'referrerAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'referrerAmountWei',
+        type: 'uint256',
+      },
+    ],
+    name: 'MintFeePaid',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'mintFee',
         type: 'uint256',
       },
     ],
@@ -139,8 +241,27 @@ export default [
     inputs: [
       {
         indexed: false,
+        internalType: 'address[]',
+        name: 'addresses',
+        type: 'address[]',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256[]',
+        name: 'fees',
+        type: 'uint256[]',
+      },
+    ],
+    name: 'NftQuestFeeListSet',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
         internalType: 'uint256',
-        name: 'fee',
+        name: 'nftQuestFee',
         type: 'uint256',
       },
     ],
@@ -153,7 +274,33 @@ export default [
       {
         indexed: true,
         internalType: 'address',
-        name: 'previousOwner',
+        name: 'pendingOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipHandoverCanceled',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'pendingOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipHandoverRequested',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'oldOwner',
         type: 'address',
       },
       {
@@ -209,13 +356,13 @@ export default [
       {
         indexed: true,
         internalType: 'address',
-        name: 'creator',
+        name: 'recipient',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'address',
-        name: 'contractAddress',
+        name: 'questAddress',
         type: 'address',
       },
       {
@@ -226,42 +373,48 @@ export default [
       },
       {
         indexed: false,
-        internalType: 'string',
-        name: 'contractType',
-        type: 'string',
-      },
-      {
-        indexed: false,
         internalType: 'address',
-        name: 'rewardTokenAddress',
+        name: 'rewardToken',
         type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'endTime',
+        name: 'rewardAmountInWeiOrTokenId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'referrer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'referralFee',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'mintFeeEthWei',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'startTime',
+        name: 'tokenReferralFee',
         type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
-        name: 'totalParticipants',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'rewardAmountOrTokenId',
+        name: 'referralClaimAmount',
         type: 'uint256',
       },
     ],
-    name: 'Quest1155Created',
+    name: 'QuestClaimReferred',
     type: 'event',
   },
   {
@@ -307,6 +460,86 @@ export default [
       {
         indexed: true,
         internalType: 'address',
+        name: 'recipient',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'questAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'extraData',
+        type: 'string',
+      },
+    ],
+    name: 'QuestClaimedData',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'recipient',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'questAddress',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'questId',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'rewardToken',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'rewardAmountInWeiOrTokenId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'referrer',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'uint16',
+        name: 'referralFee',
+        type: 'uint16',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'mintFeeEthWei',
+        type: 'uint256',
+      },
+    ],
+    name: 'QuestClaimedReferred',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
         name: 'creator',
         type: 'address',
       },
@@ -319,19 +552,43 @@ export default [
       {
         indexed: false,
         internalType: 'string',
+        name: 'projectName',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'questName',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
         name: 'questId',
         type: 'string',
       },
       {
         indexed: false,
         internalType: 'string',
-        name: 'contractType',
+        name: 'questType',
         type: 'string',
       },
       {
         indexed: false,
+        internalType: 'string',
+        name: 'actionType',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'uint32',
+        name: 'chainId',
+        type: 'uint32',
+      },
+      {
+        indexed: false,
         internalType: 'address',
-        name: 'rewardTokenAddress',
+        name: 'rewardToken',
         type: 'address',
       },
       {
@@ -366,67 +623,13 @@ export default [
     anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: 'address',
-        name: 'creator',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'contractAddress',
-        type: 'address',
-      },
-      {
         indexed: false,
-        internalType: 'string',
-        name: 'questId',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'contractType',
-        type: 'string',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'rewardTokenAddress',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'endTime',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'startTime',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'totalParticipants',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'uint256',
-        name: 'rewardAmountOrTokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'actionSpec',
-        type: 'string',
+        internalType: 'uint16',
+        name: 'percent',
+        type: 'uint16',
       },
     ],
-    name: 'QuestCreatedWithAction',
+    name: 'ReferralFeeSet',
     type: 'event',
   },
   {
@@ -435,160 +638,17 @@ export default [
       {
         indexed: true,
         internalType: 'address',
-        name: 'newQuestNFT',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'address',
-        name: 'questCreator',
-        type: 'address',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'collectionName',
-        type: 'string',
-      },
-    ],
-    name: 'QuestNFTCreated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'questAddress',
+        name: 'user',
         type: 'address',
       },
       {
         indexed: true,
         internalType: 'uint256',
-        name: 'tokenId',
+        name: 'roles',
         type: 'uint256',
       },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'questId',
-        type: 'string',
-      },
     ],
-    name: 'QuestNFTMinted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'recipient',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'questAddress',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256',
-      },
-      {
-        indexed: false,
-        internalType: 'string',
-        name: 'questId',
-        type: 'string',
-      },
-    ],
-    name: 'ReceiptMinted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'previousAdminRole',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'newAdminRole',
-        type: 'bytes32',
-      },
-    ],
-    name: 'RoleAdminChanged',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleGranted',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'sender',
-        type: 'address',
-      },
-    ],
-    name: 'RoleRevoked',
+    name: 'RolesUpdated',
     type: 'event',
   },
   {
@@ -596,37 +656,42 @@ export default [
     type: 'fallback',
   },
   {
-    inputs: [],
-    name: 'DEFAULT_ADMIN_ROLE',
-    outputs: [
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
+        internalType: 'bytes32',
+        name: 'txHash',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'uint32',
+        name: 'txHashChainId',
+        type: 'uint32',
+      },
+      {
         internalType: 'string',
-        name: 'questId_',
+        name: 'actionType',
         type: 'string',
       },
       {
-        internalType: 'bytes32',
-        name: 'hash_',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes',
-        name: 'signature_',
-        type: 'bytes',
+        internalType: 'string',
+        name: '',
+        type: 'string',
       },
     ],
-    name: 'claim1155Rewards',
+    name: 'buildJsonString',
+    outputs: [
+      {
+        internalType: 'string',
+        name: '',
+        type: 'string',
+      },
+    ],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'cancelOwnershipHandover',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',
@@ -634,22 +699,48 @@ export default [
   {
     inputs: [
       {
-        internalType: 'string',
-        name: 'questId_',
-        type: 'string',
-      },
-      {
-        internalType: 'bytes32',
-        name: 'hash_',
-        type: 'bytes32',
-      },
-      {
         internalType: 'bytes',
-        name: 'signature_',
+        name: 'compressedData_',
         type: 'bytes',
       },
     ],
-    name: 'claimRewards',
+    name: 'claimCompressed',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: 'compressedData_',
+        type: 'bytes',
+      },
+      {
+        internalType: 'address',
+        name: 'claimer',
+        type: 'address',
+      },
+    ],
+    name: 'claimCompressedRef',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    name: 'claimOptimized',
     outputs: [],
     stateMutability: 'payable',
     type: 'function',
@@ -665,6 +756,19 @@ export default [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'pendingOwner',
+        type: 'address',
+      },
+    ],
+    name: 'completeOwnershipHandover',
+    outputs: [],
+    stateMutability: 'payable',
     type: 'function',
   },
   {
@@ -701,11 +805,134 @@ export default [
       },
       {
         internalType: 'string',
-        name: 'actionSpec_',
+        name: '',
         type: 'string',
       },
     ],
     name: 'create1155QuestAndQueue',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'txHashChainId_',
+        type: 'uint32',
+      },
+      {
+        internalType: 'address',
+        name: 'rewardTokenAddress_',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'endTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'startTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'totalParticipants_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'actionType_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'questName_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'projectName_',
+        type: 'string',
+      },
+    ],
+    name: 'createERC1155Quest',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'rewardTokenAddress_',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'endTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'startTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'totalParticipants_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'tokenId_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'actionType_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'questName_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'projectName_',
+        type: 'string',
+      },
+    ],
+    name: 'createERC1155Quest',
     outputs: [
       {
         internalType: 'address',
@@ -745,16 +972,90 @@ export default [
       },
       {
         internalType: 'string',
-        name: '',
+        name: 'questId_',
         type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'actionType_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'questName_',
+        type: 'string',
+      },
+    ],
+    name: 'createERC20Quest',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint32',
+        name: 'txHashChainId_',
+        type: 'uint32',
+      },
+      {
+        internalType: 'address',
+        name: 'rewardTokenAddress_',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'endTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'startTime_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'totalParticipants_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'rewardAmount_',
+        type: 'uint256',
       },
       {
         internalType: 'string',
         name: 'questId_',
         type: 'string',
       },
+      {
+        internalType: 'string',
+        name: 'actionType_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'questName_',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'projectName_',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'referralRewardFee_',
+        type: 'uint256',
+      },
     ],
-    name: 'createQuest',
+    name: 'createERC20Quest',
     outputs: [
       {
         internalType: 'address',
@@ -799,12 +1100,12 @@ export default [
       },
       {
         internalType: 'string',
-        name: 'actionSpec_',
+        name: '',
         type: 'string',
       },
       {
         internalType: 'uint256',
-        name: 'discountTokenId_',
+        name: '',
         type: 'uint256',
       },
     ],
@@ -817,6 +1118,19 @@ export default [
       },
     ],
     stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'defaultMintFeeRecipient',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -870,19 +1184,6 @@ export default [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'getMintFeeRecipient',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [
       {
         internalType: 'string',
@@ -904,17 +1205,17 @@ export default [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
       },
     ],
-    name: 'getRoleAdmin',
+    name: 'getQuestName',
     outputs: [
       {
-        internalType: 'bytes32',
+        internalType: 'string',
         name: '',
-        type: 'bytes32',
+        type: 'string',
       },
     ],
     stateMutability: 'view',
@@ -923,35 +1224,59 @@ export default [
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         internalType: 'address',
-        name: 'account',
+        name: 'user',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
+      },
     ],
-    name: 'grantRole',
+    name: 'grantRoles',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function',
   },
   {
     inputs: [
       {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
         internalType: 'address',
-        name: 'account',
+        name: 'user',
         type: 'address',
       },
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
+      },
     ],
-    name: 'hasRole',
+    name: 'hasAllRoles',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: '',
+        type: 'bool',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
+      },
+    ],
+    name: 'hasAnyRole',
     outputs: [
       {
         internalType: 'bool',
@@ -967,11 +1292,6 @@ export default [
       {
         internalType: 'address',
         name: 'claimSignerAddress_',
-        type: 'address',
-      },
-      {
-        internalType: 'address',
-        name: 'rabbitHoleReceiptContract_',
         type: 'address',
       },
       {
@@ -995,13 +1315,18 @@ export default [
         type: 'address',
       },
       {
-        internalType: 'address',
-        name: 'questTerminalKeyAddress_',
-        type: 'address',
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint16',
+        name: 'referralFee_',
+        type: 'uint16',
       },
       {
         internalType: 'uint256',
-        name: 'nftQuestFee_',
+        name: 'mintFee_',
         type: 'uint256',
       },
     ],
@@ -1025,60 +1350,11 @@ export default [
   },
   {
     inputs: [],
-    name: 'mintFeeRecipient',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'string',
-        name: '',
-        type: 'string',
-      },
-      {
-        internalType: 'bytes32',
-        name: '',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'bytes',
-        name: '',
-        type: 'bytes',
-      },
-    ],
-    name: 'mintReceipt',
-    outputs: [],
-    stateMutability: 'pure',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'nftQuestFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'owner',
     outputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'result',
         type: 'address',
       },
     ],
@@ -1089,21 +1365,16 @@ export default [
     inputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'pendingOwner',
         type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
-    name: 'ownerCollections',
+    name: 'ownershipHandoverExpiresAt',
     outputs: [
       {
-        internalType: 'address',
-        name: '',
-        type: 'address',
+        internalType: 'uint256',
+        name: 'result',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -1181,7 +1452,7 @@ export default [
           },
           {
             internalType: 'uint256',
-            name: 'rewardAmountInWei',
+            name: 'rewardAmountOrTokenId',
             type: 'uint256',
           },
           {
@@ -1190,7 +1461,7 @@ export default [
             type: 'bool',
           },
         ],
-        internalType: 'struct QuestFactory.QuestData',
+        internalType: 'struct IQuestFactory.QuestData',
         name: '',
         type: 'tuple',
       },
@@ -1241,13 +1512,36 @@ export default [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'questNFTAddress',
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
+      },
+    ],
+    name: 'questJsonData',
     outputs: [
       {
-        internalType: 'address',
+        components: [
+          {
+            internalType: 'string',
+            name: 'actionType',
+            type: 'string',
+          },
+          {
+            internalType: 'string',
+            name: 'questName',
+            type: 'string',
+          },
+          {
+            internalType: 'uint32',
+            name: 'txHashChainId',
+            type: 'uint32',
+          },
+        ],
+        internalType: 'struct IQuestFactory.QuestJsonData',
         name: '',
-        type: 'address',
+        type: 'tuple',
       },
     ],
     stateMutability: 'view',
@@ -1283,31 +1577,35 @@ export default [
         name: 'questType',
         type: 'string',
       },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'rabbitHoleReceiptContract',
-    outputs: [
       {
-        internalType: 'contract RabbitHoleReceipt',
-        name: '',
-        type: 'address',
+        internalType: 'uint40',
+        name: 'durationTotal',
+        type: 'uint40',
       },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'rabbitHoleTicketsContract',
-    outputs: [
       {
         internalType: 'address',
-        name: '',
+        name: 'questCreator',
         type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'mintFeeRecipient',
+        type: 'address',
+      },
+      {
+        internalType: 'string',
+        name: 'actionType',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'questName',
+        type: 'string',
+      },
+      {
+        internalType: 'uint32',
+        name: 'txHashChainId',
+        type: 'uint32',
       },
     ],
     stateMutability: 'view',
@@ -1339,61 +1637,89 @@ export default [
   },
   {
     inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'renounceRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: 'role',
-        type: 'bytes32',
-      },
-      {
-        internalType: 'address',
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    name: 'revokeRole',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    name: 'rewardAllowlist',
+    name: 'referralFee',
     outputs: [
       {
-        internalType: 'bool',
+        internalType: 'uint16',
         name: '',
-        type: 'bool',
+        type: 'uint16',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'referralRewardTimestamp',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
+      },
+    ],
+    name: 'renounceRoles',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'requestOwnershipHandover',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
+      },
+    ],
+    name: 'revokeRoles',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+    ],
+    name: 'rolesOf',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'roles',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -1408,6 +1734,19 @@ export default [
       },
     ],
     name: 'setClaimSignerAddress',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'mintFeeRecipient_',
+        type: 'address',
+      },
+    ],
+    name: 'setDefaultMintFeeRecipient',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1455,32 +1794,6 @@ export default [
     inputs: [
       {
         internalType: 'address',
-        name: 'mintFeeRecipient_',
-        type: 'address',
-      },
-    ],
-    name: 'setMintFeeRecipient',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'nftQuestFee_',
-        type: 'uint256',
-      },
-    ],
-    name: 'setNftQuestFee',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
         name: 'protocolFeeRecipient_',
         type: 'address',
       },
@@ -1506,83 +1819,27 @@ export default [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: 'questTerminalKeyContract_',
-        type: 'address',
+        internalType: 'uint16',
+        name: 'referralFee_',
+        type: 'uint16',
       },
     ],
-    name: 'setQuestTerminalKeyContract',
+    name: 'setReferralFee',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'rabbitholeReceiptContract_',
-        type: 'address',
-      },
-    ],
-    name: 'setRabbitHoleReceiptContract',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'rewardAddress_',
-        type: 'address',
-      },
-      {
-        internalType: 'bool',
-        name: 'allowed_',
-        type: 'bool',
-      },
-    ],
-    name: 'setRewardAllowlistAddress',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes4',
-        name: 'interfaceId',
-        type: 'bytes4',
-      },
-    ],
-    name: 'supportsInterface',
-    outputs: [
-      {
-        internalType: 'bool',
-        name: '',
-        type: 'bool',
-      },
-    ],
-    stateMutability: 'view',
     type: 'function',
   },
   {
     inputs: [
       {
         internalType: 'uint256',
-        name: 'totalParticipants_',
+        name: 'timestamp_',
         type: 'uint256',
       },
     ],
-    name: 'totalQuestNFTFee',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
+    name: 'setReferralRewardTimestamp',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -1595,6 +1852,39 @@ export default [
     ],
     name: 'transferOwnership',
     outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'string',
+        name: 'questId_',
+        type: 'string',
+      },
+      {
+        internalType: 'address',
+        name: 'protocolFeeRecipient_',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'protocolPayout_',
+        type: 'uint256',
+      },
+      {
+        internalType: 'address',
+        name: 'mintFeeRecipient_',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'mintPayout',
+        type: 'uint256',
+      },
+    ],
+    name: 'withdrawCallback',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -1602,4 +1892,4 @@ export default [
     stateMutability: 'payable',
     type: 'receive',
   },
-]
+] as const
